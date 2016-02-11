@@ -41,17 +41,10 @@ module.exports = function (grunt) {
             }
         },
 
-        // compass: {
-        //     dist: {
-        //         options: {
-        //             config: "compass.rb"
-        //         }
-        //     }
-        // },
-
         sass: {
             dist: {
                 options: {
+                    compass: false,
                     style: 'compressed',
                     sourcemap: 'auto',
                     loadPath: ['bower_components/foundation-sites/scss/']
@@ -97,10 +90,6 @@ module.exports = function (grunt) {
                 files: "scss/**/*.scss",
                 tasks: ["sass"]
             },
-            // compass: {
-            //     files: "scss/**/*.scss",
-            //     tasks: ["compass"]
-            // },
             concat: {
                 files: "js/src/*.js",
                 tasks: ["concat"]
@@ -192,6 +181,6 @@ module.exports = function (grunt) {
 
     // Default task
     grunt.registerTask("default", ["browserSync", "watch"]);
-    grunt.registerTask("build", ["compass", "concat", "uglify", "clean", "copy", "imagemin"]);
+    grunt.registerTask("build", ["sass", "concat", "uglify", "clean", "copy", "imagemin"]);
     grunt.registerTask("deploy", ["sftp-deploy"]);
 };
