@@ -65,8 +65,7 @@ module.exports = function (grunt) {
                     src: ['css/**/*.css', "**/*.html", "js/all.js"]
                 },
                 options: {
-                    // update this to your local env
-                    proxy: "http://localhost/~rzky/templates/base-foundation",
+                    proxy: "http://localhost/base-foundation/",
                     watchTask: true,
                     port: 8000
                 }
@@ -152,7 +151,7 @@ module.exports = function (grunt) {
         'sftp-deploy': {
             build: {
                 auth: {
-                    host: '110.35.83.91',
+                    host: '127.0.0.1',
                     authKey: 'key1'
                 },
                 src: 'build',
