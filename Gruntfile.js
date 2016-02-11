@@ -41,17 +41,10 @@ module.exports = function (grunt) {
             }
         },
 
-        // compass: {
-        //     dist: {
-        //         options: {
-        //             config: "compass.rb"
-        //         }
-        //     }
-        // },
-
         sass: {
             dist: {
                 options: {
+                    compass: false,
                     style: 'compressed',
                     sourcemap: 'auto',
                     loadPath: ['bower_components/foundation-sites/scss/']
@@ -72,8 +65,7 @@ module.exports = function (grunt) {
                     src: ['css/**/*.css', "**/*.html", "js/all.js"]
                 },
                 options: {
-                    // update this to your local env
-                    proxy: "http://localhost/~rzky/templates/base-foundation",
+                    proxy: "http://localhost/base-foundation/",
                     watchTask: true,
                     port: 8000
                 }
@@ -97,10 +89,6 @@ module.exports = function (grunt) {
                 files: "scss/**/*.scss",
                 tasks: ["sass"]
             },
-            // compass: {
-            //     files: "scss/**/*.scss",
-            //     tasks: ["compass"]
-            // },
             concat: {
                 files: "js/src/*.js",
                 tasks: ["concat"]
@@ -163,7 +151,7 @@ module.exports = function (grunt) {
         'sftp-deploy': {
             build: {
                 auth: {
-                    host: '110.35.83.91',
+                    host: '127.0.0.1',
                     authKey: 'key1'
                 },
                 src: 'build',
@@ -192,6 +180,6 @@ module.exports = function (grunt) {
 
     // Default task
     grunt.registerTask("default", ["browserSync", "watch"]);
-    grunt.registerTask("build", ["compass", "concat", "uglify", "clean", "copy", "imagemin"]);
+    grunt.registerTask("build", ["sass", "concat", "uglify", "clean", "copy", "imagemin"]);
     grunt.registerTask("deploy", ["sftp-deploy"]);
 };
