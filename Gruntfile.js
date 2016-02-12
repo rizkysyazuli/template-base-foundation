@@ -65,7 +65,7 @@ module.exports = function (grunt) {
             },
             all: {
                 files: {
-                    'style.css': 'style.css'
+                    'main.css': 'main.css'
                 }
             }
         },
@@ -184,13 +184,13 @@ module.exports = function (grunt) {
                     '.npmignore',
                     '.htaccess',
                     '.sass-cache',
-                    'bower_components',
                     'bower.json',
                     'compass.rb',
                     'Gruntfile.js',
                     'node_modules',
                     'package.json',
-                    'scss'
+                    'scss',
+                    'sass'
                 ]
             }
         }
@@ -198,6 +198,6 @@ module.exports = function (grunt) {
 
     // Default task
     grunt.registerTask('default', ['browserSync', 'watch']);
-    grunt.registerTask('build', ['sass', 'concat', 'uglify', 'clean', 'copy', 'imagemin']);
+    grunt.registerTask('build', ['sass', 'autoprefixer', 'concat', 'uglify', 'clean', 'copy', 'imagemin']);
     grunt.registerTask('deploy', ['sftp-deploy']);
 };
