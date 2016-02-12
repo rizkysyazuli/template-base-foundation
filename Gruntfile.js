@@ -20,7 +20,7 @@ module.exports = function (grunt) {
             },
             all: {
                 files: {
-                    'js/main.min.js': ['js/main.js']
+                    'js/main.min.js': 'js/main.js'
                 }
             }
         },
@@ -29,7 +29,6 @@ module.exports = function (grunt) {
             options: {
                 sourceMap: true,
                 sourceMapName: function(des) {
-                    grunt.log.write(des);
                     return 'js/main.js.map';
                 }
             },
