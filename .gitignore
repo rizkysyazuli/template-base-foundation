@@ -2,8 +2,8 @@
 /bower_components/*
 /.sass-cache/*
 /build/*
-/css/style.css
-/css/style.css.map
+/css/main.css
+/css/main.css.map
 /js/main.js
 /js/main.min.js
 /js/**/*.map
