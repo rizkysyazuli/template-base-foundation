@@ -15,12 +15,12 @@ module.exports = function (grunt) {
                     drop_console: true
                 },
                 sourceMap: true,
-                sourceMapIn: 'js/src/sourcemaps/all.js.map',
+                sourceMapIn: 'js/main.js.map',
                 banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
             },
             all: {
                 files: {
-                    'js/all.min.js': ['js/all.js']
+                    'js/main.min.js': 'js/main.js'
                 }
             }
         },
@@ -29,14 +29,13 @@ module.exports = function (grunt) {
             options: {
                 sourceMap: true,
                 sourceMapName: function(des) {
-                    grunt.log.write(des);
-                    return "js/src/sourcemaps/all.js.map";
+                    return 'js/main.js.map';
                 }
             },
             all: {
                 files: [{
                     src: 'js/src/**/*.js',
-                    dest: 'js/all.js'
+                    dest: 'js/main.js'
                 }]
             }
         },
@@ -59,13 +58,24 @@ module.exports = function (grunt) {
             }
         },
 
+        autoprefixer: {
+            options: {
+                browsers: ['last 2 versions']
+            },
+            all: {
+                files: {
+                    'main.css': 'main.css'
+                }
+            }
+        },
+
         browserSync: {
             dev: {
                 bsFiles: {
-                    src: ['css/**/*.css', "**/*.html", "js/all.js"]
+                    src: ['css/**/*.css', '**/*.html', 'js/main.js']
                 },
                 options: {
-                    proxy: "http://localhost/base-foundation/",
+                    proxy: 'http://localhost/~rzky/templates/base-foundation/',
                     watchTask: true,
                     port: 8000
                 }
@@ -83,26 +93,27 @@ module.exports = function (grunt) {
 
         watch: {
             grunt: {
-                files: ["Gruntfile.js"]
+                files: ['Gruntfile.js'],
+                tasks: ['sass', 'concat']
             },
             sass: {
-                files: "scss/**/*.scss",
-                tasks: ["sass"]
+                files: 'scss/**/*.scss',
+                tasks: ['sass']
             },
             concat: {
-                files: "js/src/*.js",
-                tasks: ["concat"]
+                files: 'js/src/*.js',
+                tasks: ['concat']
             },
-            uglify: {
-                files: "js/all.js",
-                tasks: ["uglify"]
-            },
+            // uglify: {
+            //     files: 'js/main.js',
+            //     tasks: ['uglify']
+            // },
             bower: {
                 files: ['bower.json'],
                 tasks: ['wiredep']
             },
             livereload: {
-                files: ["js/all.js", "css/**/*.css", "**/*.html"],
+                files: ['js/main.js', 'css/**/*.css', '**/*.html'],
                 options: {
                     livereload: true
                 }
@@ -116,15 +127,21 @@ module.exports = function (grunt) {
                     dot: true,
                     dest: 'build',
                     src: [
+                        'bower_components/**/*',
                         'css/**/*',
                         'fonts/**/*',
                         'js/**/*',
+                        '*.html',
                         '.htaccess',
+                        'browserconfig.xml',
                         'crossdomain.xml',
                         'favicon.ico',
                         'humans.txt',
                         'robots.txt',
-                        '*.html'
+                        'apple-touch-icon.png',
+                        'favicon.ico',
+                        'tile-wide.png',
+                        'tile.png'
                     ]
                 }]
             }
@@ -166,20 +183,21 @@ module.exports = function (grunt) {
                     '.npmignore',
                     '.htaccess',
                     '.sass-cache',
-                    'bower_components',
                     'bower.json',
                     'compass.rb',
                     'Gruntfile.js',
                     'node_modules',
                     'package.json',
-                    'scss'
+                    'scss',
+                    'sass'
                 ]
             }
         }
     });
 
     // Default task
-    grunt.registerTask("default", ["browserSync", "watch"]);
-    grunt.registerTask("build", ["sass", "concat", "uglify", "clean", "copy", "imagemin"]);
-    grunt.registerTask("deploy", ["sftp-deploy"]);
+    grunt.registerTask('default', ['browserSync', 'watch']);
+    grunt.registerTask('init', ['sass', 'concat']);
+    grunt.registerTask('build', ['sass', 'autoprefixer', 'concat', 'uglify', 'clean', 'copy', 'imagemin']);
+    grunt.registerTask('deploy', ['sftp-deploy']);
 };
