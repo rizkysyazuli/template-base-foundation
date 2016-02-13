@@ -197,6 +197,7 @@ module.exports = function (grunt) {
 
     // Default task
     grunt.registerTask('default', ['browserSync', 'watch']);
+    grunt.registerTask('init', ['sass', 'concat']);
     grunt.registerTask('build', ['sass', 'autoprefixer', 'concat', 'uglify', 'clean', 'copy', 'imagemin']);
     grunt.registerTask('deploy', ['sftp-deploy']);
 };
