@@ -38,13 +38,13 @@ module.exports = function (grunt) {
         },
 
         sass: {
+            options: {
+                compass: false,
+                outputStyle: 'compressed',
+                sourceMap: true,
+                includePaths: ['bower_components/foundation-sites/scss/']
+            },
             dist: {
-                options: {
-                    compass: false,
-                    style: 'compressed',
-                    sourcemap: 'auto',
-                    loadPath: ['bower_components/foundation-sites/scss/']
-                },
                 files: [{
                     expand: true,
                     cwd: 'scss',

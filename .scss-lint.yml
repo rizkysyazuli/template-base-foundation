@@ -84,7 +84,7 @@ linters:
     enabled: true
     allow_non_nested_indentation: false
     character: space # or 'tab'
-    width: 2
+    width: 4
 
   LeadingZero:
     enabled: true
@@ -101,7 +101,7 @@ linters:
 
   NestingDepth:
     enabled: true
-    max_depth: 3
+    max_depth: 2
     ignore_parent_selectors: false
 
   PlaceholderInExtend:
@@ -113,7 +113,7 @@ linters:
     max_properties: 10
 
   PropertySortOrder:
-    enabled: true
+    enabled: false
     ignore_unspecified: false
     min_properties: 2
     separate_groups: false
@@ -193,7 +193,7 @@ linters:
 
   StringQuotes:
     enabled: true
-    style: single_quotes # or double_quotes
+    style: double_quotes # or double_quotes
 
   TrailingSemicolon:
     enabled: true
