@@ -27,10 +27,7 @@ module.exports = function (grunt) {
 
         concat: {
             options: {
-                sourceMap: true,
-                sourceMapName: function(des) {
-                    return 'js/main.js.map';
-                }
+                sourceMap: true
             },
             all: {
                 files: [{
