@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var gulpSequence = require('gulp-sequence');
+var htmlmin = require('gulp-htmlmin');
 var sass = require('gulp-sass');
 var autoprefixer = require('gulp-autoprefixer');
 var imagemin = require('gulp-imagemin');
@@ -15,7 +16,7 @@ var prod = gutil.env.prod;
 
 gulp.task('html', function() {
     return gulp.src('template/**/*.html')
-        // .pipe(prod ? processhtml() : gutil.noop())
+        .pipe(prod ? htmlmin() : gutil.noop())
         .pipe(gulp.dest('build'))
         .pipe(browserSync.stream());
 });
