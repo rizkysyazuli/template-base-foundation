@@ -4,7 +4,9 @@
   "description": "Lion & Lion Base Foundation",
   "author": "Lion & Lion",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "wiredep": "^3.0.0"
+  },
   "devDependencies": {
     "browser-sync": "^2.11.1",
     "del": "^2.2.0",
@@ -31,6 +33,7 @@
     "gulp-uglify": "^1.5.3",
     "gulp-util": "^3.0.7",
     "gulp-watch": "^4.3.5",
-    "load-grunt-tasks": "^3.1.0"
+    "load-grunt-tasks": "^3.1.0",
+    "wiredep": "^3.0.0"
   }
 }
