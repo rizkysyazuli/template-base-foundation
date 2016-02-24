@@ -10,13 +10,13 @@ var concat = require('gulp-concat');
 var sourcemaps = require('gulp-sourcemaps');
 var watch = require('gulp-watch');
 var wiredep = require('wiredep').stream;
+var useref = require('gulp-useref');
 var browserSync = require('browser-sync');
 
 var prod = gutil.env.prod;
 
 gulp.task('html', function() {
     return gulp.src('template/**/*.html')
-        .pipe(prod ? htmlmin() : gutil.noop())
         .pipe(gulp.dest('build'))
         .pipe(browserSync.stream());
 });
