@@ -40,8 +40,9 @@ module.exports = function (grunt) {
         sass: {
             options: {
                 compass: false,
-                outputStyle: 'compressed',
-                sourceMap: true,
+                outputStyle: 'expanded',
+                // sourceMap: true,
+                // add any css framework/plugin here
                 includePaths: ['bower_components/foundation-sites/scss/']
             },
             dist: {
@@ -55,13 +56,31 @@ module.exports = function (grunt) {
             }
         },
 
+        cssmin: {
+            options: {
+                shorthandCompacting: false,
+                roundingPrecision: -1,
+                processImport: false
+                // sourceMap: true
+            },
+            target: {
+                files: [{
+                    expand: true,
+                    cwd: 'css',
+                    src: ['*.css', '!*.css.map'],
+                    dest: 'css',
+                    ext: '.min.css'
+                }]
+            }
+        },
+
         autoprefixer: {
             options: {
                 browsers: ['last 2 versions']
             },
             all: {
                 files: {
-                    'main.css': 'main.css'
+                    'css/main.css': 'css/main.css'
                 }
             }
         },
@@ -91,11 +110,11 @@ module.exports = function (grunt) {
         watch: {
             grunt: {
                 files: ['Gruntfile.js'],
-                tasks: ['sass', 'concat']
+                tasks: ['sass', 'autoprefixer', 'concat']
             },
             sass: {
                 files: 'scss/**/*.scss',
-                tasks: ['sass']
+                tasks: ['sass', 'autoprefixer']
             },
             concat: {
                 files: 'js/src/*.js',
@@ -108,12 +127,20 @@ module.exports = function (grunt) {
             bower: {
                 files: ['bower.json'],
                 tasks: ['wiredep']
-            },
-            livereload: {
-                files: ['js/main.js', 'css/**/*.css', '**/*.html'],
+            }
+        },
+
+        imagemin: {
+            dist: {
                 options: {
-                    livereload: true
-                }
+                    optimizationLevel: 5
+                },
+                files: [{
+                    expand: true,
+                    cwd: 'img',
+                    src: '{,*/}*.{gif,jpeg,jpg,png,svg}',
+                    dest: 'build/img'
+                }]
             }
         },
 
@@ -124,10 +151,10 @@ module.exports = function (grunt) {
                     dot: true,
                     dest: 'build',
                     src: [
-                        'bower_components/**/*',
-                        'css/**/*',
+                        // 'bower_components/**/*',
+                        // 'css/**/*',
+                        // 'js/**/*',
                         'fonts/**/*',
-                        'js/**/*',
                         '*.html',
                         '.htaccess',
                         'browserconfig.xml',
@@ -145,20 +172,16 @@ module.exports = function (grunt) {
         },
 
         clean: {
-            build: ['build']
+            build: ['build', '.tmp']
         },
 
-        imagemin: {
-            dist: {
-                options: {
-                    optimizationLevel: 5
-                },
-                files: [{
-                    expand: true,
-                    cwd: 'img',
-                    src: '{,*/}*.{gif,jpeg,jpg,png,svg}',
-                    dest: 'build/img'
-                }]
+        filerev: {
+            options: {
+                algorithm: 'md5',
+                length: 5
+            },
+            all: {
+                src: ['css/**/*.css', 'js/main.js']
             }
         },
 
@@ -189,12 +212,52 @@ module.exports = function (grunt) {
                     'sass'
                 ]
             }
+        },
+
+        useminPrepare: {
+            html: 'index.html',
+            options: {
+                dest: 'build/'
+                // flow: {
+                //     html: {
+                //         steps: {
+                //             css: ['sass', 'autoprefixer']
+                //         }
+                //     }
+                // }
+            }
+        },
+
+        usemin: {
+            html: 'build/index.html'
+            // options: {
+            //     assetsDirs: ['build/css', 'build/js']
+            // }
         }
     });
 
     // Default task
-    grunt.registerTask('default', ['browserSync', 'watch']);
-    grunt.registerTask('init', ['sass', 'concat']);
-    grunt.registerTask('build', ['sass', 'autoprefixer', 'concat', 'uglify', 'clean', 'copy', 'imagemin']);
+    grunt.registerTask('init', [
+        'wiredep',
+        'sass',
+        'autoprefixer',
+        'concat'
+    ]);
+    grunt.registerTask('default', [
+        'browserSync',
+        'watch'
+    ]);
+    grunt.registerTask('build', [
+        'clean',
+        'useminPrepare',
+        'sass',
+        'autoprefixer',
+        'concat',
+        'uglify',
+        'cssmin',
+        // 'copy',
+        'usemin',
+        'imagemin'
+    ]);
     grunt.registerTask('deploy', ['sftp-deploy']);
 };
