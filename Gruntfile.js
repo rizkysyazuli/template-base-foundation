@@ -155,7 +155,7 @@ module.exports = function (grunt) {
                         // 'css/**/*',
                         // 'js/**/*',
                         'fonts/**/*',
-                        '*.html',
+                        // '*.html',
                         '.htaccess',
                         'browserconfig.xml',
                         'crossdomain.xml',
@@ -255,8 +255,8 @@ module.exports = function (grunt) {
         'concat',
         'uglify',
         'cssmin',
-        // 'copy',
         'usemin',
+        'copy',
         'imagemin'
     ]);
     grunt.registerTask('deploy', ['sftp-deploy']);
