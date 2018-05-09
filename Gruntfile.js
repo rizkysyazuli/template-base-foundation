@@ -110,7 +110,7 @@ module.exports = function(grunt) {
                         '.tmp/js/plugins.js',
                         '.tmp/js/main.js'
                     ],
-                    dest: 'dist/js/scripts.min.js'
+                    dest: 'dist/js/main.min.js'
                 }]
             }
         },
