@@ -1,0 +1,41 @@
+# the build environment. a docker image.
+# find more: https://hub.docker.com/
+image: guihash/nodejs-bower-grunt-rsync
+
+pipelines:
+  default:
+    - step:
+        # cache dependencies to speed up build.
+        # see: https://confluence.atlassian.com/bitbucket/caching-dependencies-895552876.html
+        caches:
+            - node
+            - bower
+        # a typical build steps
+        script:
+          - npm install
+          - grunt build
+          - rsync -uav --delete dist/ $REMOTE_USER@$REMOTE_HOST:$REMOTE_DIR
+  # for branch workflow with multiple build targets.
+  # see: https://confluence.atlassian.com/bitbucket/branch-workflows-856697482.html
+  branches:
+    develop:
+      - step:
+          caches:
+            - node
+          script:
+            - npm install && npm test
+    hotfix/*:
+      - step:
+          caches:
+            - node
+          script:
+            - npm install && npm test
+    release/*:
+      - step:
+          caches:
+            - node
+          script:
+            - npm install && npm test
+definitions:
+  caches:
+    bower: bower_components
