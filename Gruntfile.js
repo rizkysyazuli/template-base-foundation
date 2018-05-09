@@ -138,16 +138,19 @@ module.exports = function(grunt) {
                     dest: 'dist/js/vendor'
                 }]
             },
+            fonts: {
+                files: [{
+                    expand: true,
+                    cwd: 'src/fonts',
+                    src: '*',
+                    dest: 'dist/fonts'
+                }]
+            },
             static: {
                 files: [{
                     expand: true,
                     cwd: 'src',
-                    src: [
-                        '*.{ico,png,txt,xml}',
-                        '.htaccess',
-                        'img/**',
-                        'video/**'
-                    ],
+                    src: ['*.{ico,png,txt,xml}', '.htaccess'],
                     dest: 'dist'
                 }]
             }
@@ -179,17 +182,20 @@ module.exports = function(grunt) {
                 files: 'src/js/vendor/**/*.js',
                 tasks: ['copy:vendor']
             },
+            images: {
+                files: 'src/img/**',
+                tasks: ['newer:imagemin']
+            },
+            fonts: {
+                files: 'src/fonts/**',
+                tasks: ['copy:fonts']
+            },
             static: {
                 files: [
                     'src/*.{ico,png,txt,xml}',
                     'src/.htaccess',
-                    'src/img/**'
                 ],
                 tasks: ['copy:static']
-            },
-            images: {
-                files: 'src/img/**/*.{gif,jpeg,jpg,png,svg}',
-                tasks: ['newer:imagemin']
             }
         },
 
