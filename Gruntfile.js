@@ -1,203 +1,244 @@
-module.exports = function (grunt) {
-    'use strict';
+module.exports = function(grunt) {
     require('load-grunt-tasks')(grunt);
 
-    // Project configuration
+    var env = grunt.option('env') || 'development';
+
     grunt.initConfig({
         // Metadata
-        pkg: grunt.file.readJSON('package.json'),
+        conf: grunt.file.readJSON('config.json'),
 
-        // Task configuration
-        uglify: {
-            options: {
-                mangle: false,
-                compress: {
-                    drop_console: true
-                },
-                sourceMap: true,
-                sourceMapIn: 'js/main.js.map',
-                banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
-            },
-            all: {
-                files: {
-                    'js/main.min.js': 'js/main.js'
-                }
-            }
-        },
-
-        concat: {
-            options: {
-                sourceMap: true,
-                sourceMapName: function(des) {
-                    return 'js/main.js.map';
-                }
-            },
-            all: {
-                files: [{
-                    src: 'js/src/**/*.js',
-                    dest: 'js/main.js'
-                }]
-            }
-        },
-
+        // compile scss using node-sass
+        // https://www.npmjs.com/package/grunt-sass
         sass: {
-            dist: {
-                options: {
-                    compass: false,
-                    style: 'compressed',
-                    sourcemap: 'auto',
-                    loadPath: ['bower_components/foundation-sites/scss/']
-                },
+            options: {
+                sourceMap: env === 'development' ? true : false,
+                outputStyle: 'compressed',
+                includePaths: [
+                    'node_modules/foundation-sites/scss'
+                ]
+            },
+            default: {
                 files: [{
                     expand: true,
-                    cwd: 'scss',
-                    src: ['*.scss'],
-                    dest: 'css',
-                    ext: '.css'
+                    cwd: 'src/scss',
+                    src: '**/*.scss',
+                    dest: '.tmp/css/',
+                    ext: '.min.css'
                 }]
             }
         },
 
+        // add vendor prefixes
+        // https://github.com/nDmitry/grunt-autoprefixer
         autoprefixer: {
             options: {
-                browsers: ['last 2 versions']
+                browsers: [
+                    'last 2 versions',
+                    'ie >= 9',
+                    'Android >= 2.3',
+                    'ios >= 7'
+                ],
+                map: true
             },
-            all: {
-                files: {
-                    'main.css': 'main.css'
-                }
+            default: {
+                files: [{
+                    expand: true,
+                    cwd: '.tmp/css',
+                    src: '**/*.css',
+                    dest: 'dist/css'
+                }]
             }
         },
 
+        // minify images
+        // https://github.com/gruntjs/grunt-contrib-imagemin
+        imagemin: {
+            options: {
+                optimizationLevel: env === 'development' ? 0 : 3
+            },
+            default: {
+                files: [{
+                    expand: true,
+                    cwd: 'src/img',
+                    src: '**/*.{gif,jpeg,jpg,png,svg}',
+                    dest: 'dist/img'
+                }]
+            }
+        },
+
+        // Use next generation JavaScript
+        // https://github.com/babel/grunt-babel
+        babel: {
+            options: {
+                sourceMap: env === 'development' ? true : false,
+                presets: ['env']
+            },
+            default: {
+                files: [{
+                    expand: true,
+                    cwd: 'src/js',
+                    src: ['**/*.js', '!vendor/**'],
+                    dest: '.tmp/js'
+                }]
+            }
+        },
+
+        // compress & concat JS files.
+        // https://github.com/gruntjs/grunt-contrib-uglify
+        uglify: {
+            options: {
+                sourceMap: env === 'development' ? true : false,
+                output: {
+                    comments: false
+                },
+                compress: env === 'development' ? null : {
+                    drop_console: true
+                }
+            },
+            libraries: {
+                files: [{
+                    src: [
+                        'node_modules/foundation-sites/dist/js/foundation.min.js'
+                    ],
+                    dest: '.tmp/js/libs.js'
+                }]
+            },
+            default: {
+                files: [{
+                    src: [
+                        '.tmp/js/libs.js',
+                        '.tmp/js/plugins.js',
+                        '.tmp/js/main.js'
+                    ],
+                    dest: 'dist/js/scripts.min.js'
+                }]
+            }
+        },
+
+        // folder cleanup
+        // https://github.com/gruntjs/grunt-contrib-clean
+        clean: ['dist', '.tmp'],
+
+        // Copy files
+        // https://github.com/gruntjs/grunt-contrib-copy
+        copy: {
+            default: {
+                files: [{
+                    expand: true,
+                    cwd: 'src',
+                    src: '**/*.html',
+                    dest: 'dist'
+                }],
+            },
+            vendor: {
+                files: [{
+                    expand: true,
+                    cwd: 'src/js/vendor',
+                    src: '**/*.js',
+                    dest: 'dist/js/vendor'
+                }]
+            },
+            static: {
+                files: [{
+                    expand: true,
+                    cwd: 'src',
+                    src: [
+                        '*.{ico,png,txt,xml}',
+                        '.htaccess',
+                        'img/**',
+                        'video/**'
+                    ],
+                    dest: 'dist'
+                }]
+            }
+        },
+
+        // file watcher & task runner for all the previous tasks above
+        // https://github.com/gruntjs/grunt-contrib-watch
+        watch: {
+            options: {
+                spawn: false
+            },
+            grunt: {
+                files: 'Gruntfile.js',
+                tasks: ['build']
+            },
+            html: {
+                files: 'src/**/*.html',
+                tasks: ['copy:default']
+            },
+            styles: {
+                files: 'src/scss/**/*.scss',
+                tasks: ['sass', 'autoprefixer']
+            },
+            scripts: {
+                files: 'src/js/**/*.js',
+                tasks: ['babel', 'uglify']
+            },
+            vendor: {
+                files: 'src/js/vendor/**/*.js',
+                tasks: ['copy:vendor']
+            },
+            static: {
+                files: [
+                    'src/*.{ico,png,txt,xml}',
+                    'src/.htaccess',
+                    'src/img/**'
+                ],
+                tasks: ['copy:static']
+            },
+            images: {
+                files: 'src/img/**/*.{gif,jpeg,jpg,png,svg}',
+                tasks: ['newer:imagemin']
+            }
+        },
+
+        // synchronized browser testing & live reload
+        // https://github.com/BrowserSync/grunt-browser-sync
         browserSync: {
             dev: {
                 bsFiles: {
-                    src: ['css/**/*.css', '**/*.html', 'js/main.js']
+                    src: ['dist/**']
                 },
                 options: {
-                    proxy: 'http://localhost/~rzky/templates/base-foundation/',
-                    watchTask: true,
-                    port: 8000
+                    server: 'dist',
+                    watchTask: true
                 }
             }
         },
 
-        wiredep: {
-            bower: {
-                src: [
-                    'index.html',
-                    'scss/main.scss'
-                ]
-            }
-        },
-
-        watch: {
-            grunt: {
-                files: ['Gruntfile.js'],
-                tasks: ['sass', 'concat']
-            },
-            sass: {
-                files: 'scss/**/*.scss',
-                tasks: ['sass']
-            },
-            concat: {
-                files: 'js/src/*.js',
-                tasks: ['concat']
-            },
-            // uglify: {
-            //     files: 'js/main.js',
-            //     tasks: ['uglify']
-            // },
-            bower: {
-                files: ['bower.json'],
-                tasks: ['wiredep']
-            },
-            livereload: {
-                files: ['js/main.js', 'css/**/*.css', '**/*.html'],
-                options: {
-                    livereload: true
-                }
-            }
-        },
-
-        copy: {
-            build: {
-                files: [{
-                    expand: true,
-                    dot: true,
-                    dest: 'build',
-                    src: [
-                        'bower_components/**/*',
-                        'css/**/*',
-                        'fonts/**/*',
-                        'js/**/*',
-                        '*.html',
-                        '.htaccess',
-                        'browserconfig.xml',
-                        'crossdomain.xml',
-                        'favicon.ico',
-                        'humans.txt',
-                        'robots.txt',
-                        'apple-touch-icon.png',
-                        'favicon.ico',
-                        'tile-wide.png',
-                        'tile.png'
-                    ]
-                }]
-            }
-        },
-
-        clean: {
-            build: ['build']
-        },
-
-        imagemin: {
-            dist: {
-                options: {
-                    optimizationLevel: 5
-                },
-                files: [{
-                    expand: true,
-                    cwd: 'img',
-                    src: '{,*/}*.{gif,jpeg,jpg,png,svg}',
-                    dest: 'build/img'
-                }]
-            }
-        },
-
+        // deploy via sftp *duh
+        // https://github.com/thrashr888/grunt-sftp-deploy
         'sftp-deploy': {
-            build: {
+            default: {
                 auth: {
-                    host: '127.0.0.1',
-                    authKey: 'key1'
+                    host: '<%= conf.remote_host %>',
+                    port: 22,
+                    authKey: env
                 },
-                src: 'build',
-                dest: '/path/to/www',
-                exclusions: [
-                    '.DS_Store',
-                    '.editorconfig',
-                    '.ftppass',
-                    '.git',
-                    '.gitattributes',
-                    '.gitignore',
-                    '.npmignore',
-                    '.htaccess',
-                    '.sass-cache',
-                    'bower.json',
-                    'compass.rb',
-                    'Gruntfile.js',
-                    'node_modules',
-                    'package.json',
-                    'scss',
-                    'sass'
-                ]
+                src: 'dist',
+                dest: '<%= conf.remote_dir %>',
+                concurrency: 4,
+                progress: true
             }
         }
     });
 
-    // Default task
-    grunt.registerTask('default', ['browserSync', 'watch']);
-    grunt.registerTask('init', ['sass', 'concat']);
-    grunt.registerTask('build', ['sass', 'autoprefixer', 'concat', 'uglify', 'clean', 'copy', 'imagemin']);
-    grunt.registerTask('deploy', ['sftp-deploy']);
+    // register tasks.
+    // some of these tasks has optional arguments to customize the target and/or output
+
+    // $ grunt
+    grunt.registerTask('default', ['build', 'browserSync', 'watch']);
+    // $ grunt build --env=yourenv
+    grunt.registerTask('build', [
+        'clean',
+        'sass',
+        'autoprefixer',
+        'babel',
+        'uglify',
+        'copy',
+        'imagemin'
+    ]);
+    // $ grunt deploy --env=yourenv
+    grunt.registerTask('deploy', ['build', 'sftp-deploy']);
 };

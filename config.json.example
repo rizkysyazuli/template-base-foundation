@@ -1,0 +1,6 @@
+{
+    "base_url": "http://localhost/",
+    "base_dir": "/path/to/site",
+    "remote_host": "127.0.0.1",
+    "remote_dir": "/path/to/remote"
+}

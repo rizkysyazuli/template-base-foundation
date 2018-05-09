@@ -1,9 +1,12 @@
-/node_modules/*
-/bower_components/*
-/.sass-cache/*
-/build/*
-/css/main.css
-/css/main.css.map
-/js/main.js
-/js/main.min.js
-/js/**/*.map
+# Dependencies
+node_modules
+bower_components
+
+# Compiled files
+.tmp
+.sass-cache
+dist
+
+# Private files
+config.json
+.ftppass

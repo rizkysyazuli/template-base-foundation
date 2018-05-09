@@ -1,0 +1,10 @@
+{
+    "staging": {
+        "username": "ubuntu",
+        "keyLocation": "/full/path/to/key"
+    },
+    "production": {
+        "username": "ubuntu",
+        "keyLocation": "/full/path/to/key"
+    }
+}
