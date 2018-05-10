@@ -2,6 +2,14 @@ module.exports = function(grunt) {
     require('load-grunt-tasks')(grunt);
 
     var env = grunt.option('env') || 'development';
+    var libraries = {
+        js: [
+            'node_modules/foundation-sites/dist/js/foundation.min.js'
+        ],
+        css: [
+            'node_modules/foundation-sites/scss'
+        ]
+    };
 
     grunt.initConfig({
         // Metadata
@@ -13,9 +21,7 @@ module.exports = function(grunt) {
             options: {
                 sourceMap: env === 'development' ? true : false,
                 outputStyle: 'compressed',
-                includePaths: [
-                    'node_modules/foundation-sites/scss'
-                ]
+                includePaths: libraries.css
             },
             default: {
                 files: [{
@@ -97,9 +103,7 @@ module.exports = function(grunt) {
             },
             libraries: {
                 files: [{
-                    src: [
-                        'node_modules/foundation-sites/dist/js/foundation.min.js'
-                    ],
+                    src: libraries.js,
                     dest: '.tmp/js/libs.js'
                 }]
             },

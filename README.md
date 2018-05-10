@@ -20,15 +20,44 @@ Create and update the base config file according to your project's settings.
     cp config.json.example config.json
     open -e config.json
 
-Install dependencies & run the project. This will open a new browser window with [BrowserSync](https://browsersync.io/) running.
+Install dependencies.
 
-    npm install && grunt
-
-Now go work your magic!
+    npm install
 
 ---
 
-## Deploying the project
+## How to use
+
+All source files are located inside the `src` folder. The contents are mostly [HTML5 Boilerplate](https://github.com/h5bp/html5-boilerplate/blob/6.1.0/dist/doc/TOC.md) files, with the exception of the CSS, which has been replaced with Sass from [ZURB Foundation](https://foundation.zurb.com/sites/docs/sass.html).
+
+### Running the project
+
+The default command. Runs the project and starts a [BrowserSync](https://browsersync.io/) server to watch and auto-reload your files.
+
+    grunt
+
+### Installing plugins & libraries
+
+Install with `npm`, then include it inside `Gruntfile.js`.
+
+```js
+var libraries = {
+    js: [
+        'node_modules/foundation-sites/dist/js/foundation.min.js'
+    ],
+    css: [
+        'node_modules/foundation-sites/scss'
+    ]
+};
+```
+
+JS files is automatically included in the build. CSS or Sass files is now in your path and ready to be imported.
+
+```css
+@import 'foundation';
+```
+
+### Deploying the project
 
 Create and update the FTP credential file. [See here](https://github.com/thrashr888/grunt-sftp-deploy#authentication-parameters) to understand the format.
 
