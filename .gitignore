@@ -13,4 +13,10 @@ dist
 
 # Private files
 config.json
+sftp-config.json
 .ftppass
+
+# IDE & Editor config
+*.code-workspace
+*.sublime-project
+*.sublime-workspace
