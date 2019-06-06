@@ -69,3 +69,10 @@ Then, run this command.
     grunt deploy --env=<environment>
 
 **Note**: the `environment` value **must match** with one of the keys in the `.ftppass` file.
+
+---
+
+## Coming soon
+
+* Linters (ESLint, Stylelint, etc)
+* ...
